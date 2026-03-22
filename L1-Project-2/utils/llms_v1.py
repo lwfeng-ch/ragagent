@@ -54,7 +54,7 @@ MODEL_CONFIGS = {
         "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
         "api_key": os.getenv("DASHSCOPE_API_KEY"),
         "chat_model": "qwen3.5-plus",
-        "embedding_model": "qwen3-vl-embedding",
+        "embedding_model": "text-embedding-v1",
         # qwen 不支持 init_chat_model 字符串模式
         "supports_init_chat_model": False,
         "model_string": None,
@@ -250,13 +250,12 @@ def initialize_llm_with_rate_limiter(
         raise LLMInitializationError(f"不支持的LLM类型: {llm_type}")
 
     config = MODEL_CONFIGS[llm_type]
-    # 初始化速率限制器
-    logger.info(f"初始化速率限制器，速率限制器: {rate_limiter}")
     rate_limiter = InMemoryRateLimiter(
         requests_per_second=requests_per_second,
         check_every_n_seconds=0.1,
         max_bucket_size=max_bucket_size,
     )
+    logger.info(f"初始化速率限制器: {requests_per_second} req/s, bucket_size={max_bucket_size}")
 
     api_key = config["api_key"]
     if llm_type == "ollama" and not api_key:

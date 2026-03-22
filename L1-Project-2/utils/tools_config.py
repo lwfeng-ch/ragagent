@@ -28,8 +28,10 @@ except ImportError:
 from langchain.tools import ToolRuntime
 # [v1 新特性] Command 允许工具更新 agent 状态
 from langgraph.types import Command
+# [v1 新特性] ToolMessage 是工具执行后的确认消息
+from langchain_core.messages import ToolMessage
 from langchain_chroma import Chroma
-from config import Config
+from utils.config import Config
 
 logger = logging.getLogger(__name__)
 
@@ -142,14 +144,24 @@ def get_tools(llm_embedding) -> list:
     # 取消注释以启用（需要在 state 中定义对应字段 + reducer）
 
     @tool
-    def set_user_preference(key: str, value: str) -> Command:
+    def set_user_preference(key: str, value: str, runtime: ToolRuntime) -> Command:
         """设置用户偏好。
     
         Args:
             key: 偏好名称
             value: 偏好值
         """
-        return Command(update={"user_preferences": {key: value}})
+        return Command(
+            update={
+                "user_preferences": {key: value},
+                "messages": [
+                    ToolMessage(
+                        content=f"User preference '{key}' set to '{value}'",
+                        tool_call_id=runtime.tool_call_id,
+                    )
+                ],
+            }
+        )
 
     # 返回工具列表
     tools = [retriever_tool, multiply, get_conversation_summary, get_user_context, set_user_preference]

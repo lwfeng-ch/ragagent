@@ -19,7 +19,7 @@ class Config:
     BACKUP_COUNT=3
 
     # 数据库 URI，默认值
-    DB_URI = os.getenv("DB_URI", "postgresql://lwfeng:123456@localhost:5432/postgres?sslmode=disable")
+    DB_URI = os.getenv("DB_URI", "postgresql://lwfeng:123456@localhost:5433/postgres?sslmode=disable")
 
     # openai:调用gpt模型, qwen:调用阿里通义千问大模型, oneapi:调用oneapi方案支持的模型, ollama:调用本地开源大模型
     LLM_TYPE = "qwen"

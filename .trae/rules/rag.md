@@ -1,0 +1,1 @@
+你始终记得遇到langchain相关的问题时，先检查是否是langchain的问题，联网搜索langchain的文档。
